@@ -1,0 +1,46 @@
+datasource DS {
+  provider = "sqlite"
+  url = "***"
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = "native"
+}
+
+// Define your own datamodels here and run `yarn redwood db save` to create
+// migrations for them.
+// TODO: Please remove the following example:
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  username  String
+  beans   Bean[]
+  role   String   @default("USER")
+  createdAt  DateTime @default(now())
+}
+
+model Bean {
+  id    Int     @id @default(autoincrement())
+  message String
+  userId  Int
+  user   User  @relation(fields: [userId], references: [id])
+  comments Comment[]
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id    Int     @id @default(autoincrement())
+  message String
+  beanId Int
+  bean Bean @relation(fields: [beanId], references: [id])
+  userId  Int
+  user   User  @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+// enums not supported by sqlite (yes in postgres :) )
+// enum Role {
+//   USER
+//   ADMIN
+// }
